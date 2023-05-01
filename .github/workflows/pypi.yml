@@ -57,7 +57,7 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -75,3 +75,9 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+        
+    on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
