@@ -1,6 +1,24 @@
 # CS333 Final Project
 CS333 Testing and DevOps Final Project
 
+## Technologies Used
+
+* Testing Framework
+
+    * Python unittest
+
+* Source Control
+
+    * GitHub
+
+* Package Deployment
+
+    * PyPi
+
+* Automated Testing and Deployment
+
+    * GitHub Actions
+
 ## CS457 Programming Assignment 1: Metadata Management
 
 Author: Colin Martires
