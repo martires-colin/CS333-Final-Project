@@ -45,7 +45,7 @@ name: pypi
 
 on:
   release:
-    types: [created]
+    types: [push]
 
 jobs:
   deploy:
