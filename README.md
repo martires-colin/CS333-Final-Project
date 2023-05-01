@@ -1,6 +1,6 @@
 # CS333 Final Project
 
-[![image](https://img.shields.io/pypi/v/CS333-Final-Project)](https://pypi.org/project/CS333-Final-Project/)
+[![image](https://img.shields.io/badge/-PyPI-brightgreen)](https://pypi.org/project/CS333-Final-Project/)
 
 CS333 Testing and DevOps Final Project
 
