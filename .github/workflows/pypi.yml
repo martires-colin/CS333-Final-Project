@@ -43,9 +43,15 @@
 
 name: pypi
 
-on: [push]
+# on: [push]
   # release:
   #   types: [created]
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
 
 jobs:
   deploy:
