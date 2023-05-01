@@ -4,6 +4,10 @@
 
 CS333 Testing and DevOps Final Project
 
+Author: Colin Martires
+
+Date: 4/30/2023
+
 ## Technologies Used
 
 * Testing Framework
@@ -22,13 +26,55 @@ CS333 Testing and DevOps Final Project
 
     * GitHub Actions
 
-## CS457 Programming Assignment 1: Metadata Management
+## Manual Testing
+
+* Install coverage.py to view code coverage report
+
+    * `pip install coverage`
+
+* To run tests manually
+
+    * `python test_suite.py -b` or `coverage run test_suite.py -b`
+
+    ```
+    .........................................
+    ----------------------------------------------------------------------
+    Ran 41 tests in 0.063s
+
+    OK
+    ```
+
+* To view code coverage
+
+    * `coverage report`
+
+    ```
+    Name             Stmts   Miss  Cover
+    ------------------------------------
+    Functions.py       114     11    90%
+    TokenParser.py      12      0   100%
+    test_suite.py      372      4    99%
+    ------------------------------------
+    TOTAL              498     15    97%
+    ```
+
+## Automated Testing and Deployment
+
+* Tests will be automatically ran once code is pushed to the repository
+
+* The automatic deployment script will only be run if the test script passes
+
+    * Ensure you update the `VERSION` variable in `setup.py` to prevent deployment errors.
+
+---
+
+### CS457 Programming Assignment 1: Metadata Management
 
 Author: Colin Martires
 
 Date: 2/13/2023
 
-## Prerequisites
+### Prerequisites
 
 * Python 3.10.6
 
@@ -37,7 +83,7 @@ Date: 2/13/2023
     * os
     * shutil
 
-## Usage
+### Usage
 * Run main.py
 
     `python3 main.py`
