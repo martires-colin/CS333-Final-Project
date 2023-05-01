@@ -3,9 +3,9 @@
 
 name: pypi
 
-on:
-  release:
-    types: [created]
+on: [push]
+  # release:
+  #   types: [created]
 
 jobs:
   deploy:
