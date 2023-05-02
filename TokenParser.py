@@ -15,8 +15,8 @@ class TokenParser():
     # return number of args
     def getNumArgs(self, user_cmd):
         tokens = user_cmd.split(" ")
-        return len(tokens)
-        # return len(tokens) + 1
+        # return len(tokens)
+        return len(tokens) + 1
 
     # checks if command ends with ";"
     def isValidCommand(self, arg):
