@@ -66,6 +66,152 @@ Date: 4/30/2023
 
     * Ensure you update the `VERSION` variable in `setup.py` to prevent deployment errors.
 
+## File configuration for GitHub Actions
+
+> workflow files need to be stored in the .github/workflows directory
+
+### Automated Testing Configuration
+
+* template script taken from https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+* I replaced the template functions with my own workflow steps
+
+* Install coverage and run test suite
+
+    ```
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install coverage
+      - name: Test with coverage
+        run: |
+            coverage run test_suite.py -b
+    ```
+
+Full Testing Workflow Configuration
+
+```
+# test.yml
+
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
+      - name: Test with coverage
+        run: |
+          coverage run test_suite.py -b
+```
+
+### Automated Deployment Configuration
+
+* I used the same template, but added conditional logic to execute different workflows depending on the outcome of the previous workflow (chaining testing workflow and deployment workflow)
+
+* Execute workflow when Test workflow is completed
+
+    ```
+    on:
+        workflow_run:
+            workflows: ["Test"]
+            types:
+            - completed
+    ```
+
+* use conditional to run different workflows
+
+    ```
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    OR
+
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    ```
+
+* install dependencies and deploy to PyPi
+
+    ```
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERS }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+    ```
+
+    * ${{ secrets.PYPI_USERS }} = PyPI User token
+    
+    * ${{ secrets.PYPI_PASSWORD }} = PyPI API Token
+
+        * secrets should be stored through GitHub
+
+    * Reference Documentation
+
+        https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+
+Full Deployment Workflow Configuration
+
+```
+# pypi.yml
+
+name: PyPi
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERS }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
+```
+
 ---
 
 ### CS457 Programming Assignment 1: Metadata Management
